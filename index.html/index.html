@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NUVORA</title>
+<style>
+body{margin:0;font-family:sans-serif;background:#000;color:#fff}
+.top{display:flex;justify-content:space-between;padding:12px 15px;font-weight:900;font-size:22px}
+.top span{font-size:12px;background:#22c55e;padding:4px 8px;border-radius:20px}
+.stories{display:flex;gap:12px;overflow:auto;padding:10px}
+.story{text-align:center;font-size:12px}
+.circle{width:60px;height:60px;border-radius:50%;background:linear-gradient(45deg,#f59e0b,#ec4899,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:24px}
+.post{background:#111;margin:10px;border-radius:15px;overflow:hidden}
+.post img{width:100%}
+.p{padding:12px}
+.btns{display:flex;gap:15px;padding:0 12px 12px;font-size:20px}
+input{width:100%;padding:12px;border-radius:20px;border:0;margin:10px 0;background:#222;color:#fff}
+button{width:100%;padding:12px;border:0;border-radius:20px;background:#ec4899;color:#fff;font-weight:900}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#111;display:flex;justify-content:space-around;padding:15px;font-size:22px}
+</style></head>
+<body>
+<div class="top">NUVORA <span id="status">● ONLINE</span></div>
+<div class="stories" id="stories"></div>
+<div style="padding:0 10px"><input id="postText" placeholder="What's on your mind? (works offline)"><button onclick="addPost()">Post to NUVORA</button></div>
+<div id="feed"></div>
+<div style="height:80px"></div>
+<div class="nav">🏠 🔍 ➕ 💬 👤</div>
+<script>
+let posts = JSON.parse(localStorage.getItem('nuvora')||'[]');
+if(posts.length==0){posts=[
+{name:'Robert',text:'Welcome to NUVORA! Connect. Share. Discover. Even Offline.',img:'https://picsum.photos/500/400?1',likes:12},
+{name:'Nuvora',text:'This post works even without internet!',img:'https://picsum.photos/500/400?2',likes:45}
+];save()}
+function save(){localStorage.setItem('nuvora',JSON.stringify(posts))}
+function render(){
+document.getElementById('stories').innerHTML=['You','Asha','Brian','Kevin','Zawadi'].map(n=>`<div class="story"><div class="circle">${n[0]}</div>${n}</div>`).join('');
+document.getElementById('feed').innerHTML=posts.map((p,i)=>`<div class="post"><div class="p"><b>${p.name}</b></div><img src="${p.img}"><div class="p">${p.text}</div><div class="btns"><span onclick="like(${i})">❤️ ${p.likes}</span><span>💬 Comment</span><span>↗ Share</span></div></div>`).join('');
+}
+function like(i){posts[i].likes++;save();render()}
+function addPost(){let t=document.getElementById('postText').value;if(!t)return alert('Andika kitu');posts.unshift({name:'You',text:t,img:'https://picsum.photos/500/400?'+Math.random(),likes:0});save();render();document.getElementById('postText').value='';alert('Posted! Imehifadhiwa - hata offline itabaki')}
+function check(){let on=navigator.onLine;document.getElementById('status').textContent=on?'● ONLINE':'● OFFLINE - Saved';document.getElementById('status').style.background=on?'#22c55e':'#ef4444'}
+window.addEventListener('online',check);window.addEventListener('offline',check);check();render();
+</script></body></html>
